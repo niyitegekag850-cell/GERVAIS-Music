@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gervais Music</title>
+<style>
+:root{--bg:#090b13;--panel:#121625;--panel2:#1a2032;--text:#f5f6fb;--muted:#9aa3b8;--accent:#9b7cff;--accent2:#5eead4;--line:#272e43}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0%,#252044 0,transparent 34%),var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,Segoe UI,Arial,sans-serif}
+button,input{font:inherit}button{cursor:pointer;border:0;color:inherit}.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh;padding-bottom:94px}
+.sidebar{background:rgba(12,15,26,.92);border-right:1px solid var(--line);padding:26px 18px;position:sticky;top:0;height:100vh}
+.brand{font-size:21px;font-weight:800;letter-spacing:.2px;margin:4px 8px 34px}.brand span{color:var(--accent)}
+.nav-label{color:#717b93;text-transform:uppercase;font-size:11px;letter-spacing:1.5px;margin:22px 10px 9px}
+.nav button{display:flex;align-items:center;gap:12px;width:100%;padding:12px 13px;background:transparent;border-radius:12px;text-align:left;color:var(--muted);margin:3px 0}
+.nav button.active,.nav button:hover{background:var(--panel2);color:white}.nav .ico{width:20px;text-align:center;font-size:17px}
+.sidebar-note{position:absolute;bottom:24px;left:20px;right:20px;color:#75809a;font-size:12px}
+main{padding:30px clamp(18px,4vw,54px);max-width:1450px;width:100%;margin:auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:30px}
+.greeting small{color:var(--muted)}h1{font-size:clamp(25px,3vw,36px);margin:4px 0;font-weight:800}
+.search{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:0 15px;width:min(360px,48vw)}
+.search input{width:100%;background:transparent;border:0;outline:0;color:white;padding:13px 0}
+.hero{background:linear-gradient(115deg,#30245b,#4d397d 55%,#1d5964);border-radius:22px;padding:30px;display:flex;align-items:center;justify-content:space-between;gap:20px;overflow:hidden;min-height:205px}
+.hero h2{font-size:clamp(25px,3vw,36px);line-height:1.12;margin:8px 0}.hero p{color:#e0d9fa;margin:8px 0 18px}.eyebrow{font-size:12px;letter-spacing:1.7px;text-transform:uppercase;color:#c8baff}
+.primary,.secondary,.small-btn{border-radius:11px;padding:11px 17px;font-weight:700}.primary{background:white;color:#241b42}.secondary{background:var(--panel2);color:white;border:1px solid var(--line)}.hero-art{font-size:100px;filter:drop-shadow(0 15px 20px #1b143b);padding:0 30px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:30px 0 14px}.section-head h2{font-size:20px;margin:0}.muted{color:var(--muted)}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+.upload-label{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:white;padding:11px 15px;border-radius:11px;font-weight:700;cursor:pointer}.upload-label input{display:none}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:18px}
+.track-list{display:flex;flex-direction:column;gap:7px}.track{display:grid;grid-template-columns:42px minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:10px;border-radius:12px;background:transparent}.track:hover,.track.playing{background:var(--panel2)}
+.cover{height:42px;width:42px;border-radius:9px;background:linear-gradient(135deg,#5d4a91,#2b8a89);display:grid;place-items:center;font-size:19px}.track-title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track-sub{font-size:12px;color:var(--muted)}.track-actions{display:flex;gap:7px}.icon-btn{background:transparent;color:var(--muted);padding:7px;border-radius:8px}.icon-btn:hover{background:#303951;color:white}.empty{padding:30px;text-align:center;color:var(--muted)}
+.online-box{display:grid;grid-template-columns:1fr auto;gap:10px}.online-box input{min-width:0;background:#0c1020;border:1px solid var(--line);color:white;border-radius:11px;padding:12px;outline:none}.hint{font-size:12px;color:var(--muted);margin-top:10px}
+#onlineFrame{width:100%;aspect-ratio:16/9;border:0;border-radius:14px;background:#080a10;margin-top:15px}
+.player{position:fixed;bottom:0;left:0;right:0;background:rgba(15,19,31,.97);backdrop-filter:blur(18px);border-top:1px solid var(--line);padding:13px 24px;display:grid;grid-template-columns:1fr 1.2fr 1fr;align-items:center;gap:20px;z-index:10}
+.now{display:flex;align-items:center;gap:12px;min-width:0}.now .cover{height:48px;width:48px;flex-shrink:0}.now-text{min-width:0}.now-text strong,.now-text small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.now-text small{color:var(--muted);font-size:12px}
+.controls{display:flex;align-items:center;justify-content:center;gap:18px}.play{height:42px;width:42px;border-radius:50%;background:white;color:#171326;font-size:17px}.control{background:transparent;color:#c6cadd;font-size:18px}.progress-wrap{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:11px}.progress-wrap input{width:100%;accent-color:var(--accent)}
+.volume{display:flex;justify-content:flex-end;align-items:center;gap:10px}.volume input{width:90px;accent-color:var(--accent)}
+.page{display:none}.page.active{display:block}
+@media(max-width:760px){.app{grid-template-columns:1fr}.sidebar{height:auto;position:relative;padding:13px 14px;border-right:0;border-bottom:1px solid var(--line)}.brand{margin:3px 8px 10px}.nav{display:flex;overflow:auto}.nav-label,.sidebar-note{display:none}.nav button{white-space:nowrap;width:auto;padding:9px 12px}.topbar{align-items:flex-start;flex-direction:column}.search{width:100%}.hero{padding:22px}.hero-art{font-size:65px;padding:0}.player{grid-template-columns:1fr auto;padding:10px 13px;gap:8px}.controls{grid-column:2;grid-row:1}.volume{display:none}.progress-wrap{grid-column:1/-1;grid-row:2}.track{grid-template-columns:40px minmax(0,1fr) auto}.track .duration{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">♫ Gervais <span>Music</span></div>
+  <div class="nav-label">Menu</div>
+  <nav class="nav">
+    <button class="active" data-page="home"><span class="ico">⌂</span> Home</button>
+    <button data-page="library"><span class="ico">♫</span> My Music</button>
+    <button data-page="online"><span class="ico">◎</span> Online Music</button>
+    <button data-page="favorites"><span class="ico">♡</span> Favorites</button>
+  </nav>
+  <div class="nav-label">Your collection</div>
+  <nav class="nav"><button data-page="playlists"><span class="ico">▤</span> Playlists</button></nav>
+  <div class="sidebar-note">Your music, your way.<br>Local files stay on your device.</div>
+</aside>
+<main>
+  <div class="topbar">
+    <div class="greeting"><small>YOUR PERSONAL MUSIC SPACE</small><h1 id="pageTitle">Welcome back 👋</h1></div>
+    <label class="search">⌕ <input id="searchInput" placeholder="Search your music..." autocomplete="off"></label>
+  </div>
+
+  <section class="page active" id="home">
+    <div class="hero"><div><div class="eyebrow">Made for your moments</div><h2>Feel the music.<br>Live the moment.</h2><p>Add your songs or play music online.</p><button class="primary" onclick="showPage('library')">Open my music →</button></div><div class="hero-art">♫</div></div>
+    <div class="section-head"><h2>Recently added</h2><span class="muted" id="songCount">0 songs</span></div>
+    <div class="panel"><div id="recentList" class="track-list"><div class="empty">No songs yet. Add audio files to get started.</div></div></div>
+    <div class="section-head"><h2>Start listening online</h2></div>
+    <div class="panel"><p class="muted">Paste a YouTube video or music link to play it here when embedding is available.</p><div class="online-box"><input id="homeUrl" placeholder="Paste a YouTube URL..."><button class="primary" onclick="playOnlineFrom('homeUrl')">Play online</button></div></div>
+  </section>
+
+  <section class="page" id="library">
+    <div class="section-head"><h2>My Music</h2><span class="muted">Audio files from your device</span></div>
+    <div class="toolbar"><label class="upload-label">＋ Add songs <input id="fileInput" type="file" accept="audio/*" multiple></label><button class="secondary" onclick="document.getElementById('fileInput').click()">Choose audio files</button></div>
+    <div class="panel"><div id="libraryList" class="track-list"><div class="empty">Choose MP3, WAV, M4A or another supported audio file.</div></div></div>
+    <p class="hint">Files are played directly from your device. For privacy, the app does not upload your music.</p>
+  </section>
+
+  <section class="page" id="online">
+    <div class="section-head"><h2>Online Music</h2><span class="muted">Play supported online videos</span></div>
+    <div class="panel">
+      <div class="online-box"><input id="onlineUrl" placeholder="Paste a YouTube video link here..."><button class="primary" onclick="playOnlineFrom('onlineUrl')">Play</button></div>
+      <p class="hint">You can also search YouTube in a new tab. Online playback depends on the video's embed settings and your internet connection. This app does not download copyrighted music.</p>
+      <div class="toolbar"><button class="secondary" onclick="searchYouTube()">Search YouTube ↗</button><button class="secondary" onclick="clearOnline()">Stop online player</button></div>
+      <div id="onlineStatus" class="muted">No online video selected.</div>
+      <iframe id="onlineFrame" title="Online music player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <section class="page" id="favorites">
+    <div class="section-head"><h2>Your Favorites</h2><span class="muted">Songs you love</span></div>
+    <div class="panel"><div id="favoriteList" class="track-list"><div class="empty">Tap ♡ on a song to add it here.</div></div></div>
+  </section>
+
+  <section class="page" id="playlists">
+    <div class="section-head"><h2>Your Playlists</h2></div>
+    <div class="panel"><div class="toolbar"><input id="playlistName" placeholder="Playlist name" style="background:#0c1020;border:1px solid var(--line);color:white;border-radius:10px;padding:11px"><button class="primary" onclick="createPlaylist()">＋ Create playlist</button></div><div id="playlistList" class="track-list"><div class="empty">Create a playlist to organize your songs.</div></div></div>
+  </section>
+</main>
+</div>
+
+<div class="player">
+  <div class="now"><div class="cover">♫</div><div class="now-text"><strong id="nowTitle">Nothing playing</strong><small id="nowArtist">Choose a song to begin</small></div></div>
+  <div>
+    <div class="controls"><button class="control" title="Previous" onclick="previousSong()">⏮</button><button class="play" id="playBtn" title="Play/Pause" onclick="togglePlay()">▶</button><button class="control" title="Next" onclick="nextSong()">⏭</button></div>
+    <div class="progress-wrap"><span id="currentTime">0:00</span><input id="seek" type="range" min="0" max="100" value="0"><span id="duration">0:00</span></div>
+  </div>
+  <div class="volume"><span>🔊</span><input id="volume" type="range" min="0" max="1" step="0.01" value="0.8"></div>
+</div>
+<audio id="audio"></audio>
+<script>
+const audio=document.getElementById('audio');
+let songs=[], currentIndex=-1, currentObjectUrl=null, favorites=new Set(JSON.parse(localStorage.getItem('gm_favorites')||'[]')), playlists=JSON.parse(localStorage.getItem('gm_playlists')||'[]');
+const $=id=>document.getElementById(id);
+function showPage(page){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===page));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===page));const titles={home:'Welcome back 👋',library:'My Music',online:'Online Music',favorites:'Favorites',playlists:'Playlists'};$('pageTitle').textContent=titles[page]||'Gervais Music';renderAll()}
+document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+$('fileInput').addEventListener('change',e=>{const files=[...e.target.files];files.forEach(file=>{if(file.type.startsWith('audio/'))songs.push({id:'s'+Date.now()+Math.random().toString(16).slice(2),name:file.name.replace(/\.[^.]+$/,''),artist:'Local audio',file,url:URL.createObjectURL(file)})});e.target.value='';renderAll();if(songs.length)showPage('library')});
+function fmt(s){if(!Number.isFinite(s))return'0:00';return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0')}
+function playSong(index){if(index<0||index>=songs.length)return;currentIndex=index;const song=songs[index];audio.src=song.url;audio.play().catch(()=>{});$('nowTitle').textContent=song.name;$('nowArtist').textContent=song.artist;$('playBtn').textContent='Ⅱ';renderAll()}
+function togglePlay(){if(!audio.src){if(songs.length)playSong(0);return}if(audio.paused){audio.play();$('playBtn').textContent='Ⅱ'}else{audio.pause();$('playBtn').textContent='▶'}}
+function nextSong(){if(songs.length)playSong((currentIndex+1+songs.length)%songs.length)}
+function previousSong(){if(songs.length)playSong((currentIndex-1+songs.length)%songs.length)}
+audio.addEventListener('ended',nextSong);audio.addEventListener('play',()=>$('playBtn').textContent='Ⅱ');audio.addEventListener('pause',()=>$('playBtn').textContent='▶');
+audio.addEventListener('timeupdate',()=>{if(audio.duration){$('seek').value=audio.currentTime/audio.duration*100;$('currentTime').textContent=fmt(audio.currentTime);$('duration').textContent=fmt(audio.duration)}});
+$('seek').addEventListener('input',()=>{if(audio.duration)audio.currentTime=$('seek').value/100*audio.duration});
+$('volume').addEventListener('input',()=>audio.volume=$('volume').value);audio.volume=.8;
+function toggleFavorite(id){if(favorites.has(id))favorites.delete(id);else favorites.add(id);localStorage.setItem('gm_favorites',JSON.stringify([...favorites]));renderAll()}
+function trackHTML(song,index){const liked=favorites.has(song.id);return `<div class="track ${index===currentIndex?'playing':''}"><div class="cover">♫</div><div style="min-width:0;cursor:pointer" onclick="playSong(${index})"><div class="track-title">${escapeHTML(song.name)}</div><div class="track-sub">${escapeHTML(song.artist)}</div></div><span class="duration muted">${index===currentIndex?'Playing':''}</span><div class="track-actions"><button class="icon-btn" title="Play" onclick="playSong(${index})">▶</button><button class="icon-btn" title="Favorite" onclick="toggleFavorite('${song.id}')">${liked?'♥':'♡'}</button></div></div>`}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function renderList(target,items){$(target).innerHTML=items.length?items.map(s=>trackHTML(s,songs.indexOf(s))).join(''):'<div class="empty">Nothing here yet.</div>'}
+function renderAll(){const q=$('searchInput').value.toLowerCase();const filtered=songs.filter(s=>(s.name+' '+s.artist).toLowerCase().includes(q));renderList('libraryList',filtered);renderList('recentList',filtered.slice(-5).reverse());renderList('favoriteList',filtered.filter(s=>favorites.has(s.id)));$('songCount').textContent=songs.length+' song'+(songs.length===1?'':'s');renderPlaylists()}
+$('searchInput').addEventListener('input',renderAll);
+function createPlaylist(){const name=$('playlistName').value.trim();if(!name)return alert('Please enter a playlist name.');playlists.push({name,ids:[]});localStorage.setItem('gm_playlists',JSON.stringify(playlists));$('playlistName').value='';renderPlaylists()}
+function renderPlaylists(){$('playlistList').innerHTML=playlists.length?playlists.map((p,i)=>`<div class="track"><div class="cover">▤</div><div><div class="track-title">${escapeHTML(p.name)}</div><div class="track-sub">${p.ids.length} saved songs · Add songs from Favorites or My Music</div></div><button class="icon-btn" onclick="deletePlaylist(${i})">✕</button></div>`).join(''):'<div class="empty">Create a playlist to organize your songs.</div>'}
+function deletePlaylist(i){playlists.splice(i,1);localStorage.setItem('gm_playlists',JSON.stringify(playlists));renderPlaylists()}
+function getYouTubeId(url){try{const u=new URL(url);if(u.hostname.includes('youtu.be'))return u.pathname.slice(1).split('/')[0];if(u.hostname.includes('youtube.com')){if(u.pathname==='/watch')return u.searchParams.get('v');const m=u.pathname.match(/\/(embed|shorts)\/([^/?]+)/);return m?m[2]:null}}catch(e){}return null}
+function playOnlineFrom(inputId){const url=$(inputId).value.trim(),id=getYouTubeId(url);if(!id){alert('Please paste a valid YouTube video URL.');return}showPage('online');$('onlineFrame').src='https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?autoplay=1';$('onlineStatus').textContent='Playing embedded YouTube video. If it does not load, the video may not allow embedding.'}
+function searchYouTube(){const q=prompt('What song or artist do you want to search for?');if(q)window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(q),'_blank','noopener')}
+function clearOnline(){$('onlineFrame').src='';$('onlineStatus').textContent='Online player stopped.'}
+$('homeUrl').addEventListener('keydown',e=>{if(e.key==='Enter')playOnlineFrom('homeUrl')});
+$('onlineUrl').addEventListener('keydown',e=>{if(e.key==='Enter')playOnlineFrom('onlineUrl')});
+renderAll();
+</script>
+</body>
+</html>
